@@ -1,0 +1,54 @@
+default_language_version:
+  python: python3.12
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: detect-private-key
+
+  # Линтеры запускаются из окружения проекта (poetry run),
+  # чтобы версии совпадали с poetry.lock, а mypy видел все зависимости.
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: poetry run ruff check --fix
+        language: system
+        types_or: [python, pyi]
+
+      - id: ruff-format
+        name: ruff format
+        entry: poetry run ruff format
+        language: system
+        types_or: [python, pyi]
+
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: bandit
+        name: bandit
+        entry: poetry run bandit -c pyproject.toml -r src -q
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: xenon
+        name: radon/xenon complexity
+        # A — лучший, F — худший. Падает, если функция хуже B,
+        # модуль в среднем хуже A или весь проект хуже A.
+        entry: poetry run xenon src --max-absolute B --max-modules A --max-average A
+        language: system
+        types: [python]
+        pass_filenames: false
