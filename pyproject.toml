@@ -59,6 +59,7 @@ select = [
 ]
 ignore = [
     "B008",     # Depends() in defaults — стандартный паттерн FastAPI
+    "RUF001", "RUF002", "RUF003",
 ]
 
 [tool.ruff.lint.per-file-ignores]
