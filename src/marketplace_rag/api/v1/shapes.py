@@ -1,31 +1,11 @@
 import uuid
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 
-from marketplace_rag.api.deps import SessionDep
-from marketplace_rag.repositories.shape import ShapeRepository
+from marketplace_rag.api.deps import ShapeServiceDep
 from marketplace_rag.schemas.shape import ShapeCreate, ShapeRead, ShapeUpdate
-from marketplace_rag.services.shape import ShapeService
 
 router = APIRouter(prefix="/shapes", tags=["shapes"])
-
-
-def get_shape_repository(session: SessionDep) -> ShapeRepository:
-    return ShapeRepository(session)
-
-
-ShapeRepositoryDep = Annotated[ShapeRepository, Depends(get_shape_repository)]
-
-
-def get_shape_service(
-    session: SessionDep,
-    repository: ShapeRepositoryDep,
-) -> ShapeService:
-    return ShapeService(session, repository)
-
-
-ShapeServiceDep = Annotated[ShapeService, Depends(get_shape_service)]
 
 
 @router.get("")

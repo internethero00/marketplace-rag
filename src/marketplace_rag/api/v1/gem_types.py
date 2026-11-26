@@ -1,10 +1,8 @@
 import uuid
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 
-from marketplace_rag.api.deps import SessionDep
-from marketplace_rag.repositories.gem_type import GemTypeRepository
+from marketplace_rag.api.deps import GemTypeServiceDep
 from marketplace_rag.schemas.gem_type import (
     GemAttributeCreate,
     GemAttributeRead,
@@ -12,26 +10,8 @@ from marketplace_rag.schemas.gem_type import (
     GemTypeRead,
     GemTypeUpdate,
 )
-from marketplace_rag.services.gem_type import GemTypeService
 
 router = APIRouter(prefix="/gem-types", tags=["gem types"])
-
-
-def get_gem_type_repository(session: SessionDep) -> GemTypeRepository:
-    return GemTypeRepository(session)
-
-
-GemTypeRepositoryDep = Annotated[GemTypeRepository, Depends(get_gem_type_repository)]
-
-
-def get_gem_type_service(
-    session: SessionDep,
-    repository: GemTypeRepositoryDep,
-) -> GemTypeService:
-    return GemTypeService(session, repository)
-
-
-GemTypeServiceDep = Annotated[GemTypeService, Depends(get_gem_type_service)]
 
 
 @router.get("")
