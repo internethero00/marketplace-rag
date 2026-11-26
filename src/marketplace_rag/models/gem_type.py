@@ -9,12 +9,15 @@ from marketplace_rag.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 
 class GemType(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "gem_types"
-    __table_args__ = (
-        CheckConstraint("mohs_hardness BETWEEN 1 AND 10", name="mohs_hardness_range"),
-    )
 
     name: Mapped[str] = mapped_column(String(100), unique=True)
-    mohs_hardness: Mapped[Decimal | None] = mapped_column(Numeric(3, 1))
+    mohs_hardness: Mapped[Decimal | None] = mapped_column(
+        Numeric(3, 1),
+        CheckConstraint(
+            "mohs_hardness >= 1 AND mohs_hardness <= 10",
+            name="mohs_hardness_range",
+        ),
+    )
     is_active: Mapped[bool] = mapped_column(default=True, server_default=true())
 
     colors: Mapped[list["GemColor"]] = relationship(
