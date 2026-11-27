@@ -14,8 +14,6 @@ repos:
         args: ["--maxkb=1024"]
       - id: detect-private-key
 
-  # Линтеры запускаются из окружения проекта (poetry run),
-  # чтобы версии совпадали с poetry.lock, а mypy видел все зависимости.
   - repo: local
     hooks:
       - id: ruff-check
@@ -46,8 +44,6 @@ repos:
 
       - id: xenon
         name: radon/xenon complexity
-        # A — лучший, F — худший. Падает, если функция хуже B,
-        # модуль в среднем хуже A или весь проект хуже A.
         entry: poetry run xenon src --max-absolute B --max-modules A --max-average A
         language: system
         types: [python]
